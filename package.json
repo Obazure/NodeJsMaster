@@ -1,0 +1,24 @@
+{
+  "name": "node_js_master",
+  "version": "1.0.0",
+  "description": "I want to be a node master.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Obazure/NodeJsMaster.git"
+  },
+  "keywords": [
+    "node",
+    "js",
+    "master"
+  ],
+  "author": "Obazure <conprefor@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Obazure/NodeJsMaster/issues"
+  },
+  "homepage": "https://github.com/Obazure/NodeJsMaster#readme"
+}
