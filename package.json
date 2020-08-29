@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/Obazure/NodeJsMaster/issues"
   },
-  "homepage": "https://github.com/Obazure/NodeJsMaster#readme"
+  "homepage": "https://github.com/Obazure/NodeJsMaster#readme",
+  "devDependencies": {
+    "nodemod": "^2.6.1"
+  }
 }
