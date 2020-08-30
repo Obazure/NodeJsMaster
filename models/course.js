@@ -44,8 +44,11 @@ class Course {
                 path.join(__dirname, '..', 'data', 'courses.json'),
                 'utf-8',
                 (err, content) => {
-                    if (err) reject(err)
-                    resolve(JSON.parse(content))
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(JSON.parse(content))
+                    }
                 }
             )
         })
