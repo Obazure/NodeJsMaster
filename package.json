@@ -4,7 +4,8 @@
   "description": "I want to be a node master.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -21,7 +22,7 @@
     "url": "https://github.com/Obazure/NodeJsMaster/issues"
   },
   "homepage": "https://github.com/Obazure/NodeJsMaster#readme",
-  "devDependencies": {
-    "nodemod": "^2.6.1"
+  "dependencies": {
+    "nodemon": "^2.0.4"
   }
 }
