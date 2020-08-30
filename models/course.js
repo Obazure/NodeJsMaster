@@ -2,6 +2,12 @@ const uuid = require('uuid')
 const path = require('path')
 const fs = require('fs')
 
+const dataPath = path.join(
+    path.dirname(process.mainModule.filename),
+    'data', 'courses.json'
+)
+
+
 class Course {
     constructor(title, price, img) {
         this.title = title
@@ -28,7 +34,7 @@ class Course {
     static async saveAll(courses, callback) {
         return new Promise((resolve, reject) => {
             fs.writeFile(
-                path.join(__dirname, '..', 'data', 'courses.json'),
+                dataPath,
                 JSON.stringify(courses),
                 err => {
                     if (err) {
@@ -44,7 +50,7 @@ class Course {
     static getAll() {
         return new Promise((resolve, reject) => {
             fs.readFile(
-                path.join(__dirname, '..', 'data', 'courses.json'),
+                dataPath,
                 'utf-8',
                 (err, content) => {
                     if (err) {
