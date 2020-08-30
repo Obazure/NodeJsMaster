@@ -17,11 +17,7 @@ router.get('/', async (req, res) => {
 
 // create
 // store
-// show
-// edit
-
-// update
-router.post('/add', async (req, res) => {
+router.post('/', async (req, res) => {
     if (!req.body.id) {
         return res.redirect('/courses')
     }
@@ -30,6 +26,17 @@ router.post('/add', async (req, res) => {
     res.redirect('/cart')
 })
 
+// show
+// edit
+
+// update
+
+
 //destroy
+router.delete('/:id', async (req, res) => {
+    const cart = await Cart.remove(req.params.id)
+    res.status(200).json(cart)
+
+})
 
 module.exports = router

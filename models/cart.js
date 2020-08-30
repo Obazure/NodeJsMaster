@@ -13,13 +13,6 @@ class Cart {
         this.price = price
     }
 
-    toJSON() {
-        return {
-            courses: this.courses,
-            price: this.price,
-        }
-    }
-
     static async add(course) {
         const cart = await Cart.fetch()
 
@@ -68,6 +61,21 @@ class Cart {
                 }
             )
         })
+    }
+
+    static async remove(id) {
+        const cart = await Cart.fetch()
+        const idx = cart.courses.findIndex(c => c.id === id)
+        const course = cart.courses[idx]
+
+        if (course.count === 1) {
+            cart.courses = cart.courses.filter(c => c.id !== id)
+        } else {
+            cart.courses.count--
+        }
+        cart.price -= course.price
+
+        return Cart.save(cart)
     }
 }
 
