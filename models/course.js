@@ -10,10 +10,22 @@ class Course {
         this.id = uuid.v4()
     }
 
+    toJSON() {
+        return {
+            title: this.title,
+            price: this.price,
+            img: this.img,
+            id: this.id
+        }
+    }
+
     async save() {
         const courses = await Course.getAll()
         courses.push(this.toJSON())
+        return Course.saveAll(courses)
+    }
 
+    static async saveAll(courses, callback) {
         return new Promise((resolve, reject) => {
             fs.writeFile(
                 path.join(__dirname, '..', 'data', 'courses.json'),
@@ -27,15 +39,6 @@ class Course {
                 }
             )
         })
-    }
-
-    toJSON() {
-        return {
-            title: this.title,
-            price: this.price,
-            img: this.img,
-            id: this.id
-        }
     }
 
     static getAll() {
@@ -57,6 +60,19 @@ class Course {
     static async getById(id) {
         const courses = await Course.getAll()
         return courses.find(c => c.id === id)
+    }
+
+    static async update(id, course) {
+        const courses = await Course.getAll()
+        const idx = courses.findIndex(c => c.id === id)
+        courses[idx] = course
+        return Course.saveAll(courses)
+    }
+
+    static async delete(id) {
+        let courses = await Course.getAll()
+        courses = courses.filter(c => c.id !== id)
+        return Course.saveAll(courses)
     }
 }
 

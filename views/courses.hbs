@@ -7,13 +7,21 @@
                 <div class="card">
                     <div class="card-image">
                         <img src="{{img}}" alt="{{title}}">
+                        <form action="/cart/add" method="POST">
+                            <input type="hidden" name="id" value="{{id}}">
+                            <button type="submit" class="btn btn-primary halfway-fab waves-effect waves-light">Buy</button>
+                        </form>
                     </div>
                     <div class="card-content">
                         <span class="card-title">{{title}}</span>
                         <p class="price">{{price}}</p>
                     </div>
-                    <div class="card-action">
-                        <a href="/courses/{{id}}" target="_blank">More</a>
+                    <div class="card-action actions">
+                        <a href="/courses/{{id}}" target="_blank" class="btn btn-flat">More</a>
+                        <a href="/courses/{{id}}/edit?allow=true" target="_blank" class="btn btn-flat">Edit</a>
+                        <form action="/courses/{{id}}/delete?allow=true" method="POST">
+                            <button type="submit" class="btn btn-flat">Remove</button>
+                        </form>
                     </div>
                 </div>
             </div>

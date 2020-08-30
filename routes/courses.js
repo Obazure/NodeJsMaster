@@ -2,6 +2,7 @@ const {Router} = require('express')
 const Course = require('../models/course')
 const router = Router()
 
+// index
 router.get('/', async (req, res) => {
     const courses = await Course.getAll()
     res.render('courses', {
@@ -11,6 +12,27 @@ router.get('/', async (req, res) => {
     })
 })
 
+// create
+router.get('/create', (req, res) => {
+    res.render('course-create', {
+        title: ' Courses managing',
+        isCreateCourse: true,
+    })
+})
+
+// store
+router.post('/', async (req, res) => {
+    const course = new Course(
+        req.body.title,
+        req.body.price,
+        req.body.img,
+    )
+    await course.save()
+
+    res.redirect('/courses')
+})
+
+// show
 router.get('/:id', async (req, res) => {
     const course = await Course.getById(req.params.id)
     res.render('course', {
@@ -18,6 +40,36 @@ router.get('/:id', async (req, res) => {
         title: `Course: ${course.title}`,
         course
     })
+})
+
+// edit
+router.get('/:id/edit', async (req, res) => {
+    if (!req.query.allow) {
+        return res.redirect('/courses')
+    }
+    const course = await Course.getById(req.params.id)
+    res.render('course-edit', {
+        title: `Edit course: ${course.title}`,
+        course
+    })
+})
+
+// update
+router.post('/:id', async (req, res) => {
+    if (!req.query.allow || req.params.id !== req.body.id) {
+        return res.redirect('/courses')
+    }
+    await Course.update(req.params.id, req.body)
+    res.redirect('/courses')
+})
+
+//destroy
+router.post('/:id/delete', async (req, res) => {
+    if (!req.query.allow || !req.params.id) {
+        return res.redirect('/courses')
+    }
+    await Course.delete(req.params.id)
+    res.redirect('/courses')
 })
 
 module.exports = router
