@@ -10,7 +10,8 @@ router.get('/', async (req, res) => {
     res.render('cart', {
         title: 'Cart',
         isCart: true,
-        cart
+        courses: cart.courses,
+        price: cart.price
     })
 })
 
@@ -26,7 +27,6 @@ router.post('/add', async (req, res) => {
     }
     const course = await Course.getById(req.body.id)
     await Cart.add(course)
-    console.log('saved')
     res.redirect('/cart')
 })
 
