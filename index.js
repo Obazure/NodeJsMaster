@@ -11,7 +11,8 @@ const app = express()
 
 const hbs = exphbs.create({
     defaultLayout: 'main',
-    extname: 'hbs'
+    extname: 'hbs',
+
 })
 
 app.engine('hbs', hbs.engine)
@@ -26,7 +27,11 @@ app.use('/courses', coursesRoutes)
 
 async function start() {
     try {
-        await mongoose.connect(connection, {useNewUrlParser: true, useUnifiedTopology: true})
+        await mongoose.connect(connection, {
+            useNewUrlParser: true,
+            useFindAndModify: true,
+            useUnifiedTopology: true
+        })
         const PORT = process.env.PORT || 3000
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}...`)
