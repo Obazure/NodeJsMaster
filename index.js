@@ -1,5 +1,6 @@
 const express = require('express')
 const path = require('path')
+const mongoose = require('mongoose')
 const exphbs = require('express-handlebars')
 const {connection} = require('./config/config')
 const homeRoutes = require('./routes/home')
@@ -23,8 +24,16 @@ app.use('/', homeRoutes)
 app.use('/cart', cartRoutes)
 app.use('/courses', coursesRoutes)
 
-const PORT = process.env.PORT || 3000
+async function start() {
+    try {
+        await mongosee.connect(connection, {useNewUrlParser: true})
+        const PORT = process.env.PORT || 3000
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}...`)
+        })
+    } catch (e) {
+        console.log(e)
+    }
+}
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}...`)
-})
+start()
