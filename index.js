@@ -1,10 +1,10 @@
 const express = require('express')
 const path = require('path')
 const exphbs = require('express-handlebars')
+const {connection} = require('./config/config')
 const homeRoutes = require('./routes/home')
 const cartRoutes = require('./routes/cart')
 const coursesRoutes = require('./routes/courses')
-
 
 const app = express()
 
