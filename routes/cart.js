@@ -35,6 +35,7 @@ router.post('/', async (req, res) => {
 //destroy
 router.delete('/:id', async (req, res) => {
     const cart = await Cart.remove(req.params.id)
+    console.log(cart)
     res.status(200).json(cart)
 
 })

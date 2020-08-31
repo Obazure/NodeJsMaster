@@ -28,7 +28,7 @@ class Cart {
         }
 
         cart.price += +course.price
-        console.log('something')
+
         return Cart.save(cart)
     }
 
@@ -57,7 +57,7 @@ class Cart {
                     if (err)
                         reject(err)
                     else
-                        resolve()
+                        resolve(cart)
                 }
             )
         })
@@ -67,15 +67,14 @@ class Cart {
         const cart = await Cart.fetch()
         const idx = cart.courses.findIndex(c => c.id === id)
         const course = cart.courses[idx]
-
         if (course.count === 1) {
             cart.courses = cart.courses.filter(c => c.id !== id)
         } else {
-            cart.courses.count--
+            cart.courses[idx].count--
         }
         cart.price -= course.price
 
-        return Cart.save(cart)
+        return await Cart.save(cart)
     }
 }
 

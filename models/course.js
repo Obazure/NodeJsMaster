@@ -31,7 +31,7 @@ class Course {
         return Course.saveAll(courses)
     }
 
-    static async saveAll(courses, callback) {
+    static async saveAll(courses) {
         return new Promise((resolve, reject) => {
             fs.writeFile(
                 dataPath,
@@ -40,7 +40,7 @@ class Course {
                     if (err) {
                         reject(err)
                     } else {
-                        resolve()
+                        resolve(courses)
                     }
                 }
             )
