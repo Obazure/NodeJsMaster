@@ -26,7 +26,7 @@ app.use('/courses', coursesRoutes)
 
 async function start() {
     try {
-        await mongosee.connect(connection, {useNewUrlParser: true})
+        await mongoose.connect(connection, {useNewUrlParser: true, useUnifiedTopology: true})
         const PORT = process.env.PORT || 3000
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}...`)
