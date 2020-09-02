@@ -5,12 +5,20 @@ const router = Router()
 
 // index
 router.get('/', async (req, res) => {
-    const cart = await req.user.cart.items.populate('items')
+    const user = await req.user.populate('cart.items.courseId').execPopulate()
+    const courses = user.cart.items.map(course => {
+        return {...course.courseId._doc, count: course.count}
+    })
+    const price = courses.reduce((total, course) => {
+        console.log(total)
+        return total += course.price * course.count
+    }, 0)
+
     res.render('cart', {
         title: 'Cart',
         isCart: true,
-        courses: cart.courses,
-        price: cart.price
+        courses,
+        price
     })
 })
 
@@ -33,7 +41,7 @@ router.post('/', async (req, res) => {
 
 //destroy
 router.delete('/:id', async (req, res) => {
-    const cart = await Cart.remove(req.params.id)
+    const cart = await req.user.cart
     console.log(cart)
     res.status(200).json(cart)
 
