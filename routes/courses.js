@@ -4,7 +4,10 @@ const router = Router()
 
 // index
 router.get('/', async (req, res) => {
-    const courses = await Course.find().lean()
+    const courses = await Course.find()
+        .populate('userId', 'name email')
+        // .select('')
+        .lean()
     res.render('courses', {
         title: ' Courses',
         isCourses: true,
@@ -26,6 +29,7 @@ router.post('/', async (req, res) => {
         title: req.body.title,
         price: req.body.price,
         img: req.body.img,
+        userId: req.user
     })
     try {
         await course.save()

@@ -6,6 +6,7 @@ const {connection} = require('./config/config')
 const homeRoutes = require('./routes/home')
 const cartRoutes = require('./routes/cart')
 const coursesRoutes = require('./routes/courses')
+const User = require('./models/user')
 
 const app = express()
 
@@ -19,11 +20,23 @@ app.engine('hbs', hbs.engine)
 app.set('view engine', 'hbs')
 app.set('views', 'views')
 
+app.use(async (req, res, next) => {
+    const user = await User.findById('5f4fafe486149f93605f09b6')
+    try {
+        req.user = user
+        next()
+    } catch (e) {
+        console.log(e)
+    }
+})
+
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({extended: false}))
 app.use('/', homeRoutes)
 app.use('/cart', cartRoutes)
 app.use('/courses', coursesRoutes)
+
+const PORT = process.env.PORT || 3000
 
 async function start() {
     try {
@@ -32,7 +45,15 @@ async function start() {
             useFindAndModify: true,
             useUnifiedTopology: true
         })
-        const PORT = process.env.PORT || 3000
+        const candidate = await User.findOne()
+        if (!candidate) {
+            const user = new User({
+                email: 'email.email.com',
+                name: 'UserA',
+                cart: {items: []}
+            })
+            await user.save()
+        }
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}...`)
         })
