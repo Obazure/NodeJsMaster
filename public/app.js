@@ -26,11 +26,11 @@ if ($cart) {
                                     <td>${c.title}</td>
                                     <td>${c.count}</td>
                                     <td>
-                                        <button class="btn btn-small cart-course-remove" data-id="${c.id}">Remove</button>
+                                        <button class="btn btn-small cart-course-remove" data-id="${c._id}">Remove</button>
                                     </td>
                                 </tr>
                             `
-                        }).join()
+                        }).join('')
                         $cart.querySelector('tbody').innerHTML = html
                         $cart.querySelector('.price').textContent = toCurrency(cart.price)
                     } else {

@@ -2,17 +2,23 @@ const {Router} = require('express')
 const Course = require('../models/course')
 const router = Router()
 
+function mapCartItems(cart) {
+    return cart.items.map(course => {
+        return {...course.courseId._doc, count: course.count}
+    })
+}
+
+function calculatePrice(courses) {
+    return courses.reduce((total, course) => {
+        return total += course.price * course.count
+    }, 0)
+}
 
 // index
 router.get('/', async (req, res) => {
     const user = await req.user.populate('cart.items.courseId').execPopulate()
-    const courses = user.cart.items.map(course => {
-        return {...course.courseId._doc, count: course.count}
-    })
-    const price = courses.reduce((total, course) => {
-        console.log(total)
-        return total += course.price * course.count
-    }, 0)
+    const courses = mapCartItems(user.cart)
+    const price = calculatePrice(courses)
 
     res.render('cart', {
         title: 'Cart',
@@ -41,8 +47,11 @@ router.post('/', async (req, res) => {
 
 //destroy
 router.delete('/:id', async (req, res) => {
-    const cart = await req.user.cart
-    console.log(cart)
+    await req.user.removeFromCart(req.params.id)
+    const user = await req.user.populate('cart.items.courseId').execPopulate()
+    const courses = mapCartItems(user.cart)
+    const price = calculatePrice(courses)
+    const cart = {courses, price}
     res.status(200).json(cart)
 
 })
