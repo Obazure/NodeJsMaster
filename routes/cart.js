@@ -4,7 +4,11 @@ const router = Router()
 
 function mapCartItems(cart) {
     return cart.items.map(course => {
-        return {...course.courseId._doc, count: course.count}
+        return {
+            ...course.courseId._doc,
+            id: course.courseId.id,
+            count: course.count
+        }
     })
 }
 
@@ -53,7 +57,6 @@ router.delete('/:id', async (req, res) => {
     const price = calculatePrice(courses)
     const cart = {courses, price}
     res.status(200).json(cart)
-
 })
 
 module.exports = router
