@@ -26,6 +26,11 @@
             <h1>Register</h1>
             <form action="/auth/register" method="post">
                 <div class="input-field">
+                    <input id="r_name" name="name" type="text" class="validate" required>
+                    <label for="r_name">Name</label>
+                    <span class="helper-text" data-error="Enter name"></span>
+                </div>
+                <div class="input-field">
                     <input id="r_email" name="email" type="email" class="validate" required>
                     <label for="r_email">Email</label>
                     <span class="helper-text" data-error="Enter email"></span>
@@ -36,7 +41,7 @@
                     <span class="helper-text" data-error="Enter password"></span>
                 </div>
                 <div class="input-field">
-                    <input id="r_confirm" name="confirm" type="password" class="validate" required>
+                    <input id="r_confirm" name="repeat" type="password" class="validate" required>
                     <label for="r_confirm">Confirm password</label>
                     <span class="helper-text" data-error="Enter confirm password"></span>
                 </div>
