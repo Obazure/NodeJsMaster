@@ -1,4 +1,5 @@
 const {Router} = require('express')
+const auth = require('../middleware/auth')
 const Course = require('../models/course')
 const router = Router()
 
@@ -16,7 +17,7 @@ router.get('/', async (req, res) => {
 })
 
 // create
-router.get('/create', (req, res) => {
+router.get('/create', auth, (req, res) => {
     res.render('course-create', {
         title: ' Courses managing',
         isCreateCourse: true,
@@ -24,7 +25,7 @@ router.get('/create', (req, res) => {
 })
 
 // store
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
     const course = new Course({
         title: req.body.title,
         price: req.body.price,
@@ -50,7 +51,7 @@ router.get('/:id', async (req, res) => {
 })
 
 // edit
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', auth, async (req, res) => {
     if (!req.query.allow) {
         return res.redirect('/courses')
     }
@@ -62,7 +63,7 @@ router.get('/:id/edit', async (req, res) => {
 })
 
 // update
-router.post('/:id', async (req, res) => {
+router.post('/:id', auth, async (req, res) => {
     if (!req.query.allow || !req.params.id) {
         return res.redirect('/courses')
     }
@@ -71,7 +72,7 @@ router.post('/:id', async (req, res) => {
 })
 
 //destroy
-router.post('/:id/delete', async (req, res) => {
+router.post('/:id/delete', auth, async (req, res) => {
     if (!req.query.allow || !req.params.id) {
         return res.redirect('/courses')
     }
