@@ -7,10 +7,13 @@
                 <div class="card">
                     <div class="card-image">
                         <img src="{{img}}" alt="{{title}}">
-                        <form action="/cart" method="POST">
-                            <input type="hidden" name="id" value="{{_id}}">
-                            <button type="submit" class="btn btn-primary halfway-fab waves-effect waves-light">Buy</button>
-                        </form>
+                        {{#if @root.isAuth}}
+                            <form action="/cart" method="POST">
+                                <input type="hidden" name="id" value="{{_id}}">
+                                <button type="submit" class="btn btn-primary halfway-fab waves-effect waves-light">Buy
+                                </button>
+                            </form>
+                        {{/if}}
                     </div>
                     <div class="card-content">
                         <span class="card-title">{{title}}</span>
@@ -18,10 +21,12 @@
                     </div>
                     <div class="card-action actions">
                         <a href="/courses/{{_id}}" target="_blank" class="btn btn-flat">More</a>
-                        <a href="/courses/{{_id}}/edit?allow=true" target="_blank" class="btn btn-flat">Edit</a>
-                        <form action="/courses/{{_id}}/delete?allow=true" method="POST">
-                            <button type="submit" class="btn btn-flat">Remove</button>
-                        </form>
+                        {{#if @root.isAuth}}
+                            <a href="/courses/{{_id}}/edit?allow=true" target="_blank" class="btn btn-flat">Edit</a>
+                            <form action="/courses/{{_id}}/delete?allow=true" method="POST">
+                                <button type="submit" class="btn btn-flat">Remove</button>
+                            </form>
+                        {{/if}}
                     </div>
                 </div>
             </div>
