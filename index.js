@@ -39,7 +39,7 @@ app.use(session({
     saveUninitialized: false,
     store
 }))
-app.use(csrf)
+app.use(csrf())
 app.use(varMiddleware)
 app.use(userMiddleware)
 

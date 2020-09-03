@@ -16,7 +16,11 @@
                     <td>{{title}}</td>
                     <td>{{count}}</td>
                     <td>
-                        <button class="btn btn-small cart-course-remove" data-id="{{id}}">Remove</button>
+                        <button
+                                class="btn btn-small cart-course-remove"
+                                data-csrf="{{@root.csrf}}"
+                                data-id="{{id}}">Remove
+                        </button>
                     </td>
                 </tr>
             {{/each}}
