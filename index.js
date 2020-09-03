@@ -6,6 +6,7 @@ const {connection} = require('./config/config')
 const homeRoutes = require('./routes/home')
 const cartRoutes = require('./routes/cart')
 const coursesRoutes = require('./routes/courses')
+const ordersRoutes = require('./routes/orders')
 const User = require('./models/user')
 
 const app = express()
@@ -35,6 +36,7 @@ app.use(express.urlencoded({extended: false}))
 app.use('/', homeRoutes)
 app.use('/cart', cartRoutes)
 app.use('/courses', coursesRoutes)
+app.use('/orders', ordersRoutes)
 
 const PORT = process.env.PORT || 3000
 
