@@ -7,19 +7,19 @@ router.get('/', async (req, res) => {
     const orders = await Order.find({'user.userId': req.user._id})
         .populate('user.userId')
         .lean()
-    res.render('orders', {
+    const response = {
         title: ' Orders',
         isOrders: true,
         orders: orders.map(o => {
             return {
-                ...o._doc,
+                ...o,
                 price: o.courses.reduce((total, c) => {
-                    return total += c.price * c.count
+                    return total += c.course.price * c.count
                 }, 0)
             }
         })
-
-    })
+    }
+    res.render('orders', response)
 })
 
 // create
@@ -46,7 +46,6 @@ router.post('/', async (req, res) => {
     } catch (e) {
         console.log(e)
     }
-
     res.redirect('/orders')
 })
 

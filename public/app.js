@@ -5,8 +5,29 @@ const toCurrency = price => {
     }).format(price)
 }
 
+const toDate = date => {
+    return new Intl.DateTimeFormat('en-US', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    }).format(new Date(date))
+}
+
+const toShortOrderNumber = text => {
+    return text.substr(-10)
+}
+
 document.querySelectorAll('.price').forEach(node => {
     node.textContent = toCurrency(node.textContent)
+})
+document.querySelectorAll('.date').forEach(node => {
+    node.textContent = toDate(node.textContent)
+})
+document.querySelectorAll('.order-number').forEach(node => {
+    node.textContent = toShortOrderNumber(node.textContent).toString().toUpperCase()
 })
 
 const $cart = document.querySelector('#cart')
