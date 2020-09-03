@@ -3,6 +3,7 @@ const path = require('path')
 const mongoose = require('mongoose')
 const exphbs = require('express-handlebars')
 const session = require('express-session')
+const MongoStore = require('connect-mongodb-session')(session)
 const {connection} = require('./config/config')
 const authRoutes = require('./routes/auth')
 const homeRoutes = require('./routes/home')
@@ -19,6 +20,10 @@ const hbs = exphbs.create({
     extname: 'hbs',
 
 })
+const store = new MongoStore({
+    collection: 'sessions',
+    uri: connection
+})
 
 app.engine('hbs', hbs.engine)
 app.set('view engine', 'hbs')
@@ -29,7 +34,8 @@ app.use(express.urlencoded({extended: false}))
 app.use(session({
     secret: 'some secret value',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    store
 }))
 app.use(varMiddleware)
 
@@ -48,15 +54,6 @@ async function start() {
             useFindAndModify: true,
             useUnifiedTopology: true
         })
-        // const candidate = await User.findOne()
-        // if (!candidate) {
-        //     const user = new User({
-        //         email: 'email.email.com',
-        //         name: 'UserA',
-        //         cart: {items: []}
-        //     })
-        //     await user.save()
-        // }
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}...`)
         })
