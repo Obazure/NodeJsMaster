@@ -7,6 +7,8 @@ router.get('/login', async (req, res) => {
     res.render('auth/login', {
         title: 'LogIn',
         isLogin: true,
+        loginError: req.flash('login-error'),
+        registerError: req.flash('register-error')
     })
 })
 
@@ -24,9 +26,11 @@ router.post('/login', async (req, res) => {
                     else res.redirect('/courses')
                 })
             } else {
+                req.flash('login-error', 'Password is wrong.')
                 res.redirect('/auth/login#login')
             }
         } else {
+            req.flash('login-error', 'Email is wrong.')
             res.redirect('/auth/login#login')
         }
 
@@ -46,6 +50,7 @@ router.post('/register', async (req, res) => {
             res.redirect('/auth/login#register')
         }
         if (candidate) {
+            req.flash('register-error', 'Email is busy.')
             res.redirect('/auth/login#register')
         } else {
             const hashPassword = await bcrypt.hash(password, 10)
