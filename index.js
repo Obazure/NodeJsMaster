@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 const exphbs = require('express-handlebars')
 const session = require('express-session')
 const MongoStore = require('connect-mongodb-session')(session)
-const {connection} = require('./config/config')
+const config = require('./config/config')
 const authRoutes = require('./routes/auth')
 const homeRoutes = require('./routes/home')
 const cartRoutes = require('./routes/cart')
@@ -24,7 +24,7 @@ const hbs = exphbs.create({
 })
 const store = new MongoStore({
     collection: 'sessions',
-    uri: connection
+    uri: config.MONGO_URI
 })
 
 app.engine('hbs', hbs.engine)
@@ -34,7 +34,7 @@ app.set('views', 'views')
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({extended: false}))
 app.use(session({
-    secret: 'some secret value',
+    secret: config.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store
@@ -54,7 +54,7 @@ const PORT = process.env.PORT || 3000
 
 async function start() {
     try {
-        await mongoose.connect(connection, {
+        await mongoose.connect(config.MONGO_URI, {
             useNewUrlParser: true,
             useFindAndModify: true,
             useUnifiedTopology: true
