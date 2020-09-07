@@ -2,6 +2,11 @@ const {Router} = require('express')
 const bcrypt = require('bcryptjs')
 const User = require('../models/user')
 const router = Router()
+const config = require('../config/config')
+const sgMail = require('@sendgrid/mail');
+const registrationSuccessMessage = require('../views/emails/registration-success')
+
+sgMail.setApiKey(config.SENDGRID_API_KEY);
 
 router.get('/login', async (req, res) => {
     res.render('auth/login', {
@@ -58,6 +63,7 @@ router.post('/register', async (req, res) => {
                 email, name, password: hashPassword, cart: {items: []}
             })
             await user.save()
+            sgMail.send(registrationSuccessMessage(user.email))
             res.redirect('/auth/login')
         }
     } catch (e) {
