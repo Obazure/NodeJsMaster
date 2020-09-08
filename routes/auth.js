@@ -1,6 +1,7 @@
 const {Router} = require('express')
 const bcrypt = require('bcryptjs')
 const crypto = require('crypto')
+const {body, validationResult} = require('express-validator/check')
 const User = require('../models/user')
 const router = Router()
 const config = require('../config/config')
@@ -48,10 +49,18 @@ router.post('/login', async (req, res) => {
 
 })
 
-router.post('/register', async (req, res) => {
+router.post('/register', body('email').isEmail(), async (req, res) => {
     try {
         const {email, password, repeat, name} = req.body
+
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            req.flash('register-error', errors.array()[0].msg)
+            return res.status(422).redirect('/auth/login#register')
+        }
+
         const candidate = await User.findOne({email})
+
         if (password !== repeat) {
             res.redirect('/auth/login#register')
         }
