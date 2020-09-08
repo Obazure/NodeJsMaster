@@ -1,9 +1,10 @@
 const {Router} = require('express')
 const bcrypt = require('bcryptjs')
 const crypto = require('crypto')
-const {body, validationResult} = require('express-validator/check')
+const {validationResult} = require('express-validator/check')
 const User = require('../models/user')
 const router = Router()
+const {registerValidators} = require('../utils/validators')
 const config = require('../config/config')
 const sgMail = require('@sendgrid/mail');
 const registrationSuccessMessage = require('../views/emails/registration-success')
@@ -49,7 +50,7 @@ router.post('/login', async (req, res) => {
 
 })
 
-router.post('/register', body('email').isEmail(), async (req, res) => {
+router.post('/register', registerValidators, async (req, res) => {
     try {
         const {email, password, repeat, name} = req.body
 
