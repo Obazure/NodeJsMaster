@@ -1,4 +1,4 @@
-const {body, validationResult} = require('express-validator/check')
+const {body, validationResult} = require('express-validator')
 const User = require('../models/user')
 
 exports.registerValidators = [
@@ -54,4 +54,13 @@ exports.loginValidators = [
                 console.log(e)
             }
         }),
+]
+
+exports.courseValidators = [
+    body('title').isLength({min: 3})
+        .withMessage('Min length for Title is 3 symbols.'),
+    body('price').isNumeric()
+        .withMessage('Wrong value for Price.'),
+    body('img', 'Wrong URL for Image.')
+        .isURL()
 ]

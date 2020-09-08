@@ -1,5 +1,7 @@
 const {Router} = require('express')
 const auth = require('../middleware/auth')
+const {validationResult} = require('express-validator')
+const {courseValidators} = require('../utils/validators')
 const Course = require('../models/course')
 const router = Router()
 
@@ -33,7 +35,22 @@ router.get('/create', auth, (req, res) => {
 })
 
 // store
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, courseValidators, async (req, res) => {
+
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(422).render('course-create', {
+            title: ' Courses managing',
+            isCreateCourse: true,
+            courseCreateError: errors.array()[0].msg,
+            data: {
+                title: req.body.title,
+                price: req.body.price,
+                img: req.body.img,
+            }
+        })
+    }
+
     const course = new Course({
         title: req.body.title,
         price: req.body.price,
@@ -83,12 +100,20 @@ router.get('/:id/edit', auth, async (req, res) => {
 })
 
 // update
-router.post('/:id', auth, async (req, res) => {
+router.post('/:id', auth, courseValidators, async (req, res) => {
     if (!req.query.allow || !req.params.id) {
         return res.redirect('/courses')
     }
+
+    const {id} = req.params
+
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(422).redirect(`/courses/${id}/edit?allow=true`)
+    }
+
     try {
-        const course = await Course.findById(req.params.id)
+        const course = await Course.findById(id)
 
         if (!isOwner(course, req)) return res.redirect('/courses')
 
