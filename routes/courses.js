@@ -50,12 +50,16 @@ router.post('/', auth, async (req, res) => {
 
 // show
 router.get('/:id', async (req, res) => {
-    const course = await Course.findById(req.params.id).lean()
-    res.render('course', {
-        layout: 'empty',
-        title: `Course: ${course.title}`,
-        course
-    })
+    try {
+        const course = await Course.findById(req.params.id).lean()
+        res.render('course', {
+            layout: 'empty',
+            title: `Course: ${course.title}`,
+            course
+        })
+    } catch (e) {
+        console.log(e)
+    }
 })
 
 // edit
@@ -102,8 +106,15 @@ router.post('/:id/delete', auth, async (req, res) => {
     if (!req.query.allow || !req.params.id) {
         return res.redirect('/courses')
     }
-    await Course.findByIdAndRemove(req.params.id)
-    res.redirect('/courses')
+    try {
+        await Course.deleteOne({
+            _id: req.params.id,
+            userId: req.user._id
+        })
+        res.redirect('/courses')
+    } catch (e) {
+        console.log(e)
+    }
 })
 
 module.exports = router
