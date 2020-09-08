@@ -23,11 +23,13 @@
                     <div class="card-action actions">
                         <a href="/courses/{{_id}}" target="_blank" class="btn btn-flat">More</a>
                         {{#if @root.isAuth}}
-                            <a href="/courses/{{_id}}/edit?allow=true" target="_blank" class="btn btn-flat">Edit</a>
-                            <form action="/courses/{{_id}}/delete?allow=true" method="POST">
-                                <input type="hidden" name="_csrf" value="{{@root.csrf}}">
-                                <button type="submit" class="btn btn-flat">Remove</button>
-                            </form>
+                            {{#ifeq userId._id @root.userId}}
+                                <a href="/courses/{{_id}}/edit?allow=true" target="_blank" class="btn btn-flat">Edit</a>
+                                <form action="/courses/{{_id}}/delete?allow=true" method="POST">
+                                    <input type="hidden" name="_csrf" value="{{@root.csrf}}">
+                                    <button type="submit" class="btn btn-flat">Remove</button>
+                                </form>
+                            {{/ifeq}}
                         {{/if}}
                     </div>
                 </div>
