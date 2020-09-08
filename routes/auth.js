@@ -93,9 +93,7 @@ router.post('/reset', (req, res) => {
                 req.flash('reset-error', 'Something went wrong, please repeat.')
                 return res.redirect('/auth/reset')
             }
-
             const token = buffer.toString('hex')
-
             const candidate = await User.findOne({email: req.body.email})
             if (candidate) {
                 candidate.resetPassToken = token
@@ -109,6 +107,58 @@ router.post('/reset', (req, res) => {
             }
 
         })
+    } catch (e) {
+        console.log(e)
+    }
+})
+
+router.get('/password/:token', async (req, res) => {
+    if (!req.params.token) return res.redirect(('/auth/login'))
+    try {
+        const user = await User.findOne({
+            resetPassToken: req.params.token,
+            resetTokenExp: {$gt: Date.now()},
+        })
+        if (user) {
+            res.render('auth/password', {
+                title: 'Reset Password',
+                isLogin: true,
+                userId: user._id.toString(),
+                token: req.params.token,
+                passwordError: req.flash('password-error'),
+            })
+        } else {
+            req.flash('reset-error', 'Something went wrong, please repeat')
+            return res.redirect('/auth/reset')
+        }
+    } catch (e) {
+        console.log(e)
+    }
+})
+
+router.post('/password', async (req, res) => {
+    try {
+        const {userId, token, password, repeat} = req.body
+        const user = await User.findOne({
+            _id: userId,
+            resetPassToken: token,
+            resetTokenExp: {$gt: Date.now()},
+        })
+
+        if (user) {
+            if (password !== repeat) {
+                req.flash('password-error', 'Passwords are different.')
+                res.redirect(`/auth/password/${token}`)
+            }
+            user.password = await bcrypt.hash(req.body.password, 10)
+            user.resetPassToken = undefined
+            user.resetTokenExp = undefined
+            await user.save()
+            return res.redirect('/auth/login')
+        } else {
+            req.flash('login-error', 'Token expired.')
+            return res.redirect('/auth/login')
+        }
     } catch (e) {
         console.log(e)
     }
