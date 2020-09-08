@@ -1,11 +1,12 @@
 const {Router} = require('express')
 const bcrypt = require('bcryptjs')
+const crypto = require('crypto')
 const User = require('../models/user')
 const router = Router()
 const config = require('../config/config')
 const sgMail = require('@sendgrid/mail');
 const registrationSuccessMessage = require('../views/emails/registration-success')
-
+cosnt = resetPasswordMessage = require('../views/emails/reset-password')
 sgMail.setApiKey(config.SENDGRID_API_KEY);
 
 router.get('/login', async (req, res) => {
@@ -75,6 +76,42 @@ router.get('/logout', async (req, res) => {
     req.session.destroy(() => {
         res.redirect('/auth/login')
     })
+})
+
+router.get('/reset', async (req, res) => {
+    res.render('auth/reset', {
+        title: 'Reset Password',
+        isLogin: true,
+        resetError: req.flash('reset-error'),
+    })
+})
+
+router.post('/reset', (req, res) => {
+    try {
+        crypto.randomBytes(32, async (err, buffer) => {
+            if (err) {
+                req.flash('reset-error', 'Something went wrong, please repeat.')
+                return res.redirect('/auth/reset')
+            }
+
+            const token = buffer.toString('hex')
+
+            const candidate = await User.findOne({email: req.body.email})
+            if (candidate) {
+                candidate.resetPassToken = token
+                candidate.resetTokenExp = Date.now() + 3600 * 1000
+                await candidate.save()
+                await sgMail.send(resetPasswordMessage(candidate.email, token))
+                res.redirect('/auth/login')
+            } else {
+                req.flash('reset-error', 'User not found.')
+                return res.redirect('/auth/reset')
+            }
+
+        })
+    } catch (e) {
+        console.log(e)
+    }
 })
 
 module.exports = router
