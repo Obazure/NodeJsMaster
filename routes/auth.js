@@ -52,7 +52,7 @@ router.post('/login', async (req, res) => {
 
 router.post('/register', registerValidators, async (req, res) => {
     try {
-        const {email, password, repeat, name} = req.body
+        const {email, password, name} = req.body
 
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
@@ -60,23 +60,14 @@ router.post('/register', registerValidators, async (req, res) => {
             return res.status(422).redirect('/auth/login#register')
         }
 
-        const candidate = await User.findOne({email})
+        const hashPassword = await bcrypt.hash(password, 10)
+        const user = new User({
+            email, name, password: hashPassword, cart: {items: []}
+        })
+        await user.save()
+        sgMail.send(registrationSuccessMessage(user.email))
+        res.redirect('/auth/login')
 
-        if (password !== repeat) {
-            res.redirect('/auth/login#register')
-        }
-        if (candidate) {
-            req.flash('register-error', 'Email is busy.')
-            res.redirect('/auth/login#register')
-        } else {
-            const hashPassword = await bcrypt.hash(password, 10)
-            const user = new User({
-                email, name, password: hashPassword, cart: {items: []}
-            })
-            await user.save()
-            sgMail.send(registrationSuccessMessage(user.email))
-            res.redirect('/auth/login')
-        }
     } catch (e) {
         console.log(e)
     }
