@@ -15,6 +15,7 @@ const user = new Schema({
     },
     resetPassToken: String,
     resetTokenExp: Date,
+    avatarUrl: String,
     cart: {
         items: [{
             count: {

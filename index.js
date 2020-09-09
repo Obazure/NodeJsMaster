@@ -1,5 +1,6 @@
 const express = require('express')
 const path = require('path')
+const fs = require('fs')
 const csrf = require('csurf')
 const flash = require('connect-flash')
 const mongoose = require('mongoose')
@@ -16,8 +17,15 @@ const profileRoutes = require('./routes/profile')
 const varMiddleware = require('./middleware/variables')
 const userMiddleware = require('./middleware/user')
 const errorHandlerMiddleware = require('./middleware/error')
+const fileMiddleware = require('./middleware/file')
 
 const app = express()
+
+if (!fs.existsSync("images")) {
+    fs.mkdirSync("images", '0766', (err) => {
+        if (err) console.log(err)
+    })
+}
 
 const hbs = exphbs.create({
     defaultLayout: 'main',
@@ -34,6 +42,7 @@ app.set('view engine', 'hbs')
 app.set('views', 'views')
 
 app.use(express.static(path.join(__dirname, 'public')))
+app.use('/images', express.static(path.join(__dirname, 'images')))
 app.use(express.urlencoded({extended: false}))
 app.use(session({
     secret: config.SESSION_SECRET,
@@ -41,6 +50,7 @@ app.use(session({
     saveUninitialized: false,
     store
 }))
+app.use(fileMiddleware.single('avatar'))
 app.use(csrf())
 app.use(flash())
 app.use(varMiddleware)
