@@ -1,0 +1,30 @@
+<h1>Profile</h1>
+
+<div class="row">
+    <div class="col s6">
+        <img class="avatar" src="" alt="">
+
+        <p>Avatar is not found.</p>
+    </div>
+    <div class="col s6">
+        <form action="/profile" method="POST">
+            <p>Email: {{user.email}}</p>
+            <div class="input-field">
+                <input id="name" name="name" type="text" class="validate" required value="{{user.name}}">
+                <label for="name">User name</label>
+                <span class="helper-text" data-error="Enter User name"></span>
+            </div>
+            <div class="file-field input-field">
+                <div class="btn">
+                    <span>Avatar</span>
+                    <input name="avatart" type="file">
+                </div>
+                <div class="file-path-wrapper">
+                    <input class="file-path validate" type="text">
+                </div>
+            </div>
+            <input type="hidden" name="_csrf" value="{{csrf}}">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>
